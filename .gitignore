@@ -1,0 +1,8 @@
+*
+!*/
+!*.*
+*.hdf5
+*.pyc
+__pycache_
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
