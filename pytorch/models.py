@@ -179,12 +179,12 @@ class AcousticModelCRnn8Dropout(nn.Module):
 
 # regression
 class Regress_onset_offset_frame_velocity_CRNN(nn.Module):
-    def __init__(self, frame_per_second, classes_num):
+    def __init__(self, frames_per_second, classes_num):
         super(Regress_onset_offset_frame_velocity_CRNN, self).__init__()
         
         sample_rate = 16000
         window_size = 2048
-        hop_size = sample_rate // frame_per_second
+        hop_size = sample_rate // frames_per_second
         mel_bins = 229
         fmin = 30
         fmax = sample_rate // 2
