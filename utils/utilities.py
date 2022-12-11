@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import os
 import logging
 import h5py
@@ -108,7 +105,7 @@ def read_metadata(csv_path):
         'duration': [698.66116031, ...]}
     """
 
-    with open(csv_path, 'r') as fr:
+    with open(csv_path, 'r', encoding="utf_8") as fr:
         reader = csv.reader(fr, delimiter=',')
         lines = list(reader)
 
@@ -400,13 +397,15 @@ class TargetProcessor(object):
                     velocity_roll[max(bgn_frame, 0) : fin_frame + 1, piano_note] = note_event['velocity']
 
                     # Vector from the center of a frame to ground truth offset
-                    reg_offset_roll[fin_frame, piano_note] =                         (note_event['offset_time'] - start_time) - (fin_frame / self.frames_per_second)
+                    reg_offset_roll[fin_frame, piano_note] = \
+                        (note_event['offset_time'] - start_time) - (fin_frame / self.frames_per_second)
 
                     if bgn_frame >= 0:
                         onset_roll[bgn_frame, piano_note] = 1
 
                         # Vector from the center of a frame to ground truth onset
-                        reg_onset_roll[bgn_frame, piano_note] =                             (note_event['onset_time'] - start_time) - (bgn_frame / self.frames_per_second)
+                        reg_onset_roll[bgn_frame, piano_note] = \
+                            (note_event['onset_time'] - start_time) - (bgn_frame / self.frames_per_second)
                 
                     # Mask out segment notes
                     else:
@@ -434,11 +433,13 @@ class TargetProcessor(object):
                 pedal_frame_roll[max(bgn_frame, 0) : fin_frame + 1] = 1
 
                 pedal_offset_roll[fin_frame] = 1
-                reg_pedal_offset_roll[fin_frame] =                     (pedal_event['offset_time'] - start_time) - (fin_frame / self.frames_per_second)
+                reg_pedal_offset_roll[fin_frame] = \
+                    (pedal_event['offset_time'] - start_time) - (fin_frame / self.frames_per_second)
 
                 if bgn_frame >= 0:
                     pedal_onset_roll[bgn_frame] = 1
-                    reg_pedal_onset_roll[bgn_frame] =                         (pedal_event['onset_time'] - start_time) - (bgn_frame / self.frames_per_second)
+                    reg_pedal_onset_roll[bgn_frame] = \
+                        (pedal_event['onset_time'] - start_time) - (bgn_frame / self.frames_per_second)
 
         # Get regresssion padal targets
         reg_pedal_onset_roll = self.get_regression(reg_pedal_onset_roll)
@@ -725,7 +726,8 @@ class RegressionPostProcessor(object):
         """
 
         # Post process piano note outputs to piano note and pedal events information
-        (est_on_off_note_vels, est_pedal_on_offs) =             self.output_dict_to_note_pedal_arrays(output_dict)
+        (est_on_off_note_vels, est_pedal_on_offs) = \
+            self.output_dict_to_note_pedal_arrays(output_dict)
         """est_on_off_note_vels: (events_num, 4), the four columns are: [onset_time, offset_time, piano_note, velocity], 
         est_pedal_on_offs: (pedal_events_num, 2), the two columns are: [onset_time, offset_time]"""
 
@@ -767,7 +769,8 @@ class RegressionPostProcessor(object):
         # will be processed to [0., 0., 0., 0., 1., 0., 0., 0., 0., 0.]
 
         # Calculate binarized onset output from regression output
-        (onset_output, onset_shift_output) =             self.get_binarized_output_from_regression(
+        (onset_output, onset_shift_output) = \
+            self.get_binarized_output_from_regression(
                 reg_output=output_dict['reg_onset_output'], 
                 threshold=self.onset_threshold, neighbour=2)
 
@@ -775,7 +778,8 @@ class RegressionPostProcessor(object):
         output_dict['onset_shift_output'] = onset_shift_output  
 
         # Calculate binarized offset output from regression output
-        (offset_output, offset_shift_output) =             self.get_binarized_output_from_regression(
+        (offset_output, offset_shift_output) = \
+            self.get_binarized_output_from_regression(
                 reg_output=output_dict['reg_offset_output'], 
                 threshold=self.offset_threshold, neighbour=4)
 
@@ -790,7 +794,8 @@ class RegressionPostProcessor(object):
 
         if 'reg_pedal_offset_output' in output_dict.keys():
             # Calculate binarized pedal offset output from regression output
-            (pedal_offset_output, pedal_offset_shift_output) =                 self.get_binarized_output_from_regression(
+            (pedal_offset_output, pedal_offset_shift_output) = \
+                self.get_binarized_output_from_regression(
                     reg_output=output_dict['reg_pedal_offset_output'], 
                     threshold=self.pedal_offset_threshold, neighbour=4)
 
@@ -1035,7 +1040,8 @@ class OnsetsFramesPostProcessor(object):
         """
 
         # Post process piano note outputs to piano note and pedal events information
-        (est_on_off_note_vels, est_pedal_on_offs) =             self.output_dict_to_note_pedal_arrays(output_dict)
+        (est_on_off_note_vels, est_pedal_on_offs) = \
+            self.output_dict_to_note_pedal_arrays(output_dict)
         """est_on_off_note_vels: (events_num, 4), the four columns are: [onset_time, offset_time, piano_note, velocity], 
         est_pedal_on_offs: (pedal_events_num, 2), the two columns are: [onset_time, offset_time]"""
         
@@ -1378,4 +1384,3 @@ def load_audio(path, sr=22050, mono=True, offset=0.0, duration=None,
     y = np.ascontiguousarray(y, dtype=dtype)
 
     return (y, sr)
-

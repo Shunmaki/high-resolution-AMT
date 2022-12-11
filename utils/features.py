@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-# In[3]:
-
-
 import numpy as np
 import argparse
 import csv
@@ -17,9 +13,6 @@ import logging
 from utilities import (create_folder, float32_to_int16, create_logging, 
     get_filename, read_metadata, read_midi, read_maps_midi)
 import config
-
-
-# In[4]:
 
 
 def pack_maestro_dataset_to_hdf5(args):
@@ -36,7 +29,7 @@ def pack_maestro_dataset_to_hdf5(args):
     sample_rate = config.sample_rate
 
     # Paths
-    csv_path = os.path.join(dataset_dir, 'maestro-v2.0.0.csv')
+    csv_path = os.path.join(dataset_dir, 'maestro-v3.0.0.csv')
     waveform_hdf5s_dir = os.path.join(workspace, 'hdf5s', 'maestro')
 
     logs_dir = os.path.join(workspace, 'logs', get_filename(__file__))
@@ -83,9 +76,6 @@ def pack_maestro_dataset_to_hdf5(args):
         
     logging.info('Write hdf5 to {}'.format(packed_hdf5_path))
     logging.info('Time: {:.3f} s'.format(time.time() - feature_time))
-
-
-# In[5]:
 
 
 def pack_maps_dataset_to_hdf5(args):
@@ -148,9 +138,6 @@ def pack_maps_dataset_to_hdf5(args):
     logging.info('Time: {:.3f} s'.format(time.time() - feature_time))
 
 
-# In[6]:
-
-
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='')
@@ -175,10 +162,3 @@ if __name__ == '__main__':
 
     else:
         raise Exception('Incorrect arguments!')
-
-
-# In[ ]:
-
-
-
-
